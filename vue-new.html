@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
     <style>
     button {
       padding: 5px;
@@ -132,6 +133,76 @@
     </style>
   </head>
   <body>
+    <div id="app">
+      <h1>{{message}}</h1>
+      <h2>My favorite number is {{favoriteNum()}}</h2>
+      <form @submit.prevent="addItem()">
+        <div>
+          <label for="todo">What to do?</label>
+          <input type="text" name="todo" id="" v-model="todo.title">
+        </div>
+        <div>
+            <label for="isOptional">Optional?</label>
+            <input type="checkbox" name="isOptional" id="" v-model="todo.optional">
+        </div>
 
+        <button type="submit" name="button">Add Item</button>
+      </form>
+
+      <div class="lists">
+        <ul>
+          <li v-for="(todo, i) in notDoneTodos">
+            <span>{{todo.title}}
+              <span><strong>{{todo.optional ? "optional" : "required"}}</strong></span>
+            </span>
+
+            <button @click="removeItem(i)">Done</button>
+          </li>
+        </ul>
+        <ul>
+            <li v-for="(doneTodo, i) in doneTodos">
+              <span>{{doneTodo.title}}
+                <span><strong>{{doneTodo.optional ? "optional" : "required"}}</strong></span>
+              </span>
+
+              <button @click="moveItemBack(i)">Whoops</button>
+          </li>
+          </ul>
+      </div>
+    </div>
   </body>
+  <script type="text/javascript">
+      var v1 = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello world",
+          favNum: 9,
+          notDoneTodos: [
+            { title: "Save the beers", optional: false },
+            { title: "Clean kids", optional: true },
+            { title: "Take out trash", optional: false }
+          ],
+          todo: {},
+          doneTodos: []
+        },
+        methods: {
+          favoriteNum() {
+            return this.favNum * 2;
+          },
+          addItem() {
+            this.todo.optional = this.todo.optional || false;
+            this.notDoneTodos.push(this.todo);
+            this.todo = {};
+          },
+          removeItem(i) {
+            this.doneTodos.push(...this.notDoneTodos.splice(i, 1));
+          },
+          moveItemBack(i) {
+            this.notDoneTodos.push(...this.doneTodos.splice(i, 1));
+          }
+        }
+      });
+
+      console.log(v1.message);
+  </script>
 </html>
